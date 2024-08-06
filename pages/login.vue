@@ -7,26 +7,33 @@ const loginF = ref()
 </script>
 
 <template>
-  <v-container>
-    <v-row style="height:100vh;">
-      <v-col align-self="start" cols="12" md="4" offset-md="4">
-        <div class="text-center ma-12">
-          <h1>Central Kitchen</h1>
-          <div class="text-caption">SSB</div>
-        </div>
-      </v-col>
-      <v-col align-self="end" cols="12" md="4" offset-md="4" class="mb-3">
-        <v-form ref="loginF" lazy-validation>
-          <v-text-field :rules="[v => !!v || 'item required']" rounded="lg" variant="underlined" label="No WA*"
-            clearable type="number" />
-          <v-text-field :rules="[v => !!v || 'item required']" rounded="lg" variant="underlined" label="Password*"
-            :append-inner-icon="passType ? 'mdi-eye-off' : 'mdi-eye'" :type="passType ? 'password' : 'text'"
-            @click:append-inner="passType = !passType" clearable />
-        </v-form>
-        <v-btn size="large" rounded="lg" block variant="tonal" class="text-capitalize">
-          Submit&nbsp;
-        </v-btn>
-      </v-col>
-    </v-row>
-  </v-container>
+  <v-app>
+    <v-main style="background-color: #6E2D30;">
+      <v-container class="fill-height">
+        <v-row>
+          <v-col cols="12" md="4" offset-md="4">
+            <v-card variant="tonal" color="secondary" class="pt-10 pb-5" rounded="xl">
+              <v-card-title class="text-center">Sentral Kitchen</v-card-title>
+              <v-card-text class="pt-10">
+                <v-form ref="loginF" lazy-validation>
+                  <v-text-field :rules="[v => !!v || 'item required']" variant="underlined" rounded="lg" label="No WA*"
+                    clearable type="number" />
+                  <v-text-field :rules="[v => !!v || 'item required']" rounded="lg" variant="underlined"
+                    label="Password*" :append-inner-icon="passType ? 'mdi-eye-off' : 'mdi-eye'"
+                    :type="passType ? 'password' : 'text'" @click:append-inner="passType = !passType" clearable />
+                </v-form>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn size="large" color="secondary" rounded="lg" block variant="flat" class="text-capitalize">
+                  Masuk&nbsp;
+                  <v-icon right class="i-mdi-login"></v-icon>
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-main>
+  </v-app>
 </template>
