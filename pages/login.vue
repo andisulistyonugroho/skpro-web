@@ -1,4 +1,7 @@
 <script setup>
+definePageMeta({
+  layout: ''
+})
 const passType = ref(false)
 const loginF = ref()
 </script>

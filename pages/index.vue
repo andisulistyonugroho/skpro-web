@@ -1,3 +1,8 @@
+<script setup>
+definePageMeta({
+  layout: 'default'
+})
+</script>
 <template>
-  <div>Everyone Free Palestine</div>
+  <div>From the river to the sea Palestine will be free</div>
 </template>
