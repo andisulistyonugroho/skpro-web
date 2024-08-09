@@ -1,0 +1,35 @@
+ syntax = "proto3";
+ option go_package = "github.com/andisulistyonugroho/skpro-auth";
+
+ service Authenticator {
+    rpc Create(CreateRequest) returns (CreateResponse);
+    rpc Login(LoginRequest) returns (LoginResponse);
+ }
+
+ message CreateRequest {
+    string username = 1;
+    string password = 2;
+ }
+
+ message CreateResponse {
+    int32 userid = 1;
+    string username = 2;
+    string token = 3;
+    int32 groupid = 4;
+    int32 userptnrid = 5;
+    string userpidgin = 6;
+ }
+
+ message LoginRequest {
+   string username = 1;
+   string password = 2;
+}
+
+message LoginResponse {
+   int32 userid = 1;
+   string username = 2;
+   string token = 3;
+   int32 groupid = 4;
+   int32 userptnrid = 5;
+   string userpidgin = 6;
+}
