@@ -1,6 +1,7 @@
 <script setup>
 definePageMeta({
-  layout: ''
+  layout: '',
+  middleware: 'auth'
 })
 const { $debounce, $router } = useNuxtApp()
 const { login } = useAuthStore()

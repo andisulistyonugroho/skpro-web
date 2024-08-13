@@ -1,5 +1,6 @@
 <script setup>
 const { $bus } = useNuxtApp()
+const { user } = useAuthStore()
 
 const waitDialog = ref(false)
 const drawer = ref(true)
@@ -35,6 +36,7 @@ onBeforeUnmount(() => {
 <template>
   <v-app>
     <v-navigation-drawer v-model="drawer">
+      <div class="pt-3 px-3">Wilujeng, {{ user.profile.userName }}</div>
       <LazyTheMenu />
     </v-navigation-drawer>
     <v-app-bar density="compact">
