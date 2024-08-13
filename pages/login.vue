@@ -2,8 +2,25 @@
 definePageMeta({
   layout: ''
 })
+const { $debounce, $router } = useNuxtApp()
+const { login } = useAuthStore()
 const passType = ref(false)
 const loginF = ref()
+const payload = ref({
+  username: null,
+  password: null
+})
+
+const doLogin = $debounce(async () => {
+  const validation = await loginF.value.validate()
+  if (!validation.valid) {
+    return true
+  }
+  const loginresponse = await login(payload.value)
+  if (loginresponse) {
+    $router.replace('/')
+  }
+}, 1000, { leading: true, trailing: false })
 </script>
 
 <template>
@@ -13,19 +30,20 @@ const loginF = ref()
         <v-row>
           <v-col cols="12" md="4" offset-md="4">
             <v-card variant="tonal" color="secondary" class="pt-10 pb-5" rounded="xl">
-              <v-card-title class="text-center">Sentral Kitchen</v-card-title>
+              <v-card-title class="text-center">Central Kitchen</v-card-title>
               <v-card-text class="pt-10">
                 <v-form ref="loginF" lazy-validation>
-                  <v-text-field :rules="[v => !!v || 'item required']" variant="underlined" rounded="lg" label="No WA*"
-                    clearable type="number" />
-                  <v-text-field :rules="[v => !!v || 'item required']" rounded="lg" variant="underlined"
-                    label="Password*" :append-inner-icon="passType ? 'mdi-eye-off' : 'mdi-eye'"
+                  <v-text-field v-model="payload.username" :rules="[v => !!v || 'item required']" variant="underlined"
+                    rounded="lg" label="Username*" clearable />
+                  <v-text-field v-model="payload.password" :rules="[v => !!v || 'item required']" rounded="lg"
+                    variant="underlined" label="Password*" :append-inner-icon="passType ? 'mdi-eye-off' : 'mdi-eye'"
                     :type="passType ? 'password' : 'text'" @click:append-inner="passType = !passType" clearable />
                 </v-form>
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn size="large" color="secondary" rounded="lg" block variant="flat" class="text-capitalize">
+                <v-btn size="large" color="secondary" rounded="lg" block variant="flat" class="text-capitalize"
+                  @click="doLogin">
                   Masuk&nbsp;
                   <v-icon right class="i-mdi-login"></v-icon>
                 </v-btn>

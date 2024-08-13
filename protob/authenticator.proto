@@ -1,4 +1,5 @@
  syntax = "proto3";
+ option optimize_for = CODE_SIZE;
  option go_package = "github.com/andisulistyonugroho/skpro-auth";
 
  service Authenticator {
