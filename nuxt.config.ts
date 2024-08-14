@@ -58,7 +58,7 @@ export default defineNuxtConfig({
       theme: {
         defaultTheme: 'light',
       },
-      //     labComponents: ['VDateInput']
+      labComponents: ['VDateInput']
     }
   }
 })

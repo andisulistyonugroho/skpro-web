@@ -3,7 +3,7 @@ const menus = [
   {
     title: 'Sales Order', link: '/salesorder', icon: 'i-mdi-book-account-outline',
     childs: [
-      { title: null, link: null }
+      { title: 'Baru', link: '/salesorder/add' }
     ]
   },
   // {
@@ -30,13 +30,13 @@ const menus = [
           </template>
 
           <template v-for="child in parent.childs">
-            <template v-if="child.childs[0].title">
+            <template v-if="child.grandchild && child.grandchild.title">
               <v-list-group class="secondlevel" :value="child.title">
                 <template v-slot:activator="{ props }">
                   <v-list-item v-bind="props" :prepend-icon="child.icon" :value="child.title"
                     :title="child.title"></v-list-item>
                 </template>
-                <v-list-item v-for="grandchild in child.childs" :value="grandchild.title" :title="grandchild.title"
+                <v-list-item v-for="grandchild in child.grandchild" :value="grandchild.title" :title="grandchild.title"
                   :to="grandchild.link"></v-list-item>
               </v-list-group>
             </template>
