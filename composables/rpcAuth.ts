@@ -1,11 +1,13 @@
 // Naming convention, all rpc request use 'r' prefix camelCase
 import { GrpcWebFetchTransport } from "@protobuf-ts/grpcweb-transport"
 import { AuthenticatorClient } from "~/protob-gen/authenticator.client"
+
 export default function () {
+  const config = useRuntimeConfig()
   const rLogin = (async (username: string, password: string) => {
     try {
       console.log('login rpc auth')
-      const apiURL = "http://localhost:4000"
+      const apiURL = config.public.apiBase
       const _transport = new GrpcWebFetchTransport({
         baseUrl: apiURL,
         format: 'text'

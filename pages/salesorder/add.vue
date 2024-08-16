@@ -17,7 +17,7 @@ const priceLists = ['HARGA JUAL OUTLET BYL CV.SOSIS']
 
 const payload = ref({
   soDate: $dayjs().toDate(),
-  customer: null
+  ptnrId: null
 })
 
 const headers = [
@@ -108,12 +108,21 @@ const boats = [
         <v-row>
           <v-col cols="12" md="6">
             <v-date-input v-model="payload.soDate" prepend-icon="" label="Tanggal Transaksi" />
-            <v-autocomplete v-model="payload.customer" :items="customers" label="Customer" />
+            <v-autocomplete v-model="payload.ptnrId" :items="customers" item-value="ptnrId" item-title="ptnrName"
+              label="Customer">
+              <template v-slot:item="{ props, item }">
+                <v-list-item v-bind="props" :subtitle="item.raw.ptnrId" />
+              </template>
+              <template v-slot:selection="{ item, index }">
+                {{ item.title }} - {{ item.value }}
+              </template>
+            </v-autocomplete>
           </v-col>
           <v-col cols="12" md="6">
             <v-autocomplete :items="priceLists" label="Pricelist Area" />
             <v-autocomplete :items="priceLists" label="Pricelist" />
           </v-col>
+          {{ payload }}
         </v-row>
         <v-row>
           <v-col cols="12">
