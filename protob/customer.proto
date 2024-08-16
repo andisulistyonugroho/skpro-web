@@ -1,0 +1,23 @@
+syntax = "proto3";
+option optimize_for = SPEED;
+option go_package = "github.com/andisulistyonugroho/skpro-auth";
+
+service Customer {
+    rpc CustomerOfEntity(cofRequest) returns (cofResponse);
+}
+
+message cofRequest {
+    optional int32 en_id = 1;
+    optional string active = 2;
+}
+
+message cofResponse {
+    repeated CustomerType data = 1;
+}   
+
+message CustomerType {
+    string ptnr_id = 1;
+    string ptnr_code = 2;
+    string ptnr_name = 3;
+    int32 ptnr_en_id = 4;
+}

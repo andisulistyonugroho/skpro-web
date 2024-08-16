@@ -13,7 +13,8 @@ export const useAuthStore = defineStore('auth', () => {
     userId: 0,
     profile: profile,
     groupId: 0,
-    userPtnrId: 0
+    userPtnrId: 0,
+    enId: 0
   })
   const dark = ref('')
   const { rLogin } = rpcAuth()
@@ -25,16 +26,26 @@ export const useAuthStore = defineStore('auth', () => {
       return Promise.reject()
     }
 
-    setUser({ token: response.token, userId: response.userid, groupId: response.groupid, userPtnrId: response.userptnrid })
+    setUser({
+      token: response.token, userId: response.userid, enId: response.enid,
+      groupId: response.groupid, userPtnrId: response.userptnrid,
+    })
     setProfile({ userName: response.username, userPidgin: response.userpidgin })
     return Promise.resolve(true)
   })
 
-  function setUser(obj: { token: string, userId: number, groupId: number, userPtnrId: number }) {
+  function setUser(obj: {
+    token: string,
+    userId: number,
+    enId: number,
+    groupId: number,
+    userPtnrId: number
+  }) {
     user.token = obj.token
     user.userId = obj.userId
     user.groupId = obj.groupId
     user.userPtnrId = obj.userPtnrId
+    user.enId = obj.enId
   }
   function setProfile(value: object) {
     user.profile = value
@@ -46,6 +57,7 @@ export const useAuthStore = defineStore('auth', () => {
     user.profile = {}
     user.groupId = 0
     user.userPtnrId = 0
+    user.enId = 0
   }
   const changingTheme = (value: boolean) => {
     dark.value = value ? 'light' : 'dark'
