@@ -1,0 +1,23 @@
+syntax = "proto3";
+option optimize_for = SPEED;
+option go_package = "github.com/andisulistyonugroho/skpro-auth";
+
+service Area {
+    rpc AvailableArea (aaRequest) returns (aaResponse);
+}
+
+message aaRequest {
+    optional int32 area_id = 1;   
+}
+
+message aaResponse {
+    repeated AreaType data = 1;
+}
+
+message AreaType {
+    int32 area_id = 1;
+    string area_code = 2;
+    string area_name = 3;
+    string area_active = 4;
+    int32 area_parent = 5;
+}

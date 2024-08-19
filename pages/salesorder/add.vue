@@ -8,10 +8,13 @@ const { $dayjs } = useNuxtApp()
 const { user } = useAuthStore()
 const { getCustomerOfEntity } = useCustomerStore()
 const { customers } = storeToRefs(useCustomerStore())
+const { getArea } = useAreaStore()
+const { areas } = storeToRefs(useAreaStore())
 
 
 await getCustomerOfEntity(user.enId)
 console.log('abis await terbitlah:', customers)
+await getArea()
 
 const priceLists = ['HARGA JUAL OUTLET BYL CV.SOSIS']
 
@@ -119,7 +122,7 @@ const boats = [
             </v-autocomplete>
           </v-col>
           <v-col cols="12" md="6">
-            <v-autocomplete :items="priceLists" label="Pricelist Area" />
+            <v-autocomplete item-value="areaId" item-title="areaName" :items="areas" label="Pricelist Area" />
             <v-autocomplete :items="priceLists" label="Pricelist" />
           </v-col>
           {{ payload }}
