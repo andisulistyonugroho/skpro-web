@@ -26,6 +26,8 @@ const payload = ref({
   areaId: null
 })
 
+const shoppingCart = ref([])
+
 const piOid = computed(() => {
   if (!payload.value.piId && pricelists.value) return null
 
@@ -43,6 +45,7 @@ const doGetProduct = $debounce(async () => {
         paymentType: 9941,
         areaId: payload.value.areaId
       })
+      shoppingCart.value = pricelistDetail.value.map(v => ({ ...v, qty: null, total: null }))
       $bus.$emit('waitDialog', false)
     }
   } catch (error) {
@@ -50,23 +53,17 @@ const doGetProduct = $debounce(async () => {
   }
 }, 1000, { leading: true, trailing: false })
 
+const total = $debounce(async (data) => {
+  data.total = parseInt(data.qty) * data.price
+}, 500, { leading: false, trailing: true })
+
 const headers = [
-  { title: 'Boat Type', align: 'start', key: 'name' },
-  { title: 'Speed (knots)', align: 'end', key: 'speed' },
-  { title: 'Length (m)', align: 'end', key: 'length' },
-  { title: 'Price ($)', align: 'end', key: 'price' },
-  { title: 'Year', align: 'end', key: 'year' }
+  { title: 'Item', align: 'start', key: 'title', width: '*' },
+  { title: 'Harga', align: 'end', key: 'price', width: '20%' },
+  { title: 'Qty', align: 'end', key: 'qty', width: '10%' },
+  { title: 'Total', align: 'end', key: 'total', width: '30%' }
 ]
 const search = ref()
-const boats = [
-  {
-    name: 'FastTide',
-    speed: 37,
-    length: 20,
-    price: 280000,
-    year: 2022,
-  },
-]
 </script>
 <template>
   <v-container fluid>
@@ -92,14 +89,26 @@ const boats = [
             <v-autocomplete v-model="payload.areaId" item-value="areaId" item-title="areaName" :items="areas"
               label="Area" @update:model-value="doGetProduct" />
           </v-col>
-          {{ payload }}
         </v-row>
         <v-row>
           <v-col cols="12">
-            {{ pricelistDetail }}
             <v-text-field label="Search" v-model="search" />
-            <v-data-table :headers="headers" :items="boats" :search="search" height="400" item-value="name"
-              hide-default-footer />
+            <v-data-table :headers="headers" :items="shoppingCart" :search="search" height="400" item-value="name"
+              hide-default-footer>
+              <template v-slot:item.price="{ item }">
+                {{ toMoney(item.price) }}
+              </template>
+              <template v-slot:item.qty="{ item }">
+                <v-text-field v-model="item.qty" class="text-right" variant="underlined" placeholder="0" type="number"
+                  @input="total(item)" />
+              </template>
+              <template v-slot:item.total="{ item }">
+                {{ toMoney(item.total) }}
+              </template>
+            </v-data-table>
+            cart: {{ shoppingCart }}
+
+            {{ payload }}
           </v-col>
         </v-row>
       </v-card-text>

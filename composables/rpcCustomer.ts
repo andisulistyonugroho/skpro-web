@@ -6,7 +6,6 @@ export default function () {
   const config = useRuntimeConfig()
   const rGetCustomerOfEntity = (async (enId: number) => {
     try {
-      console.log('get customer rpc enid:', enId)
       const apiURL = config.public.apiBase
       const _transport = new GrpcWebFetchTransport({
         baseUrl: apiURL,

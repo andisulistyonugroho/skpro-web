@@ -20,7 +20,6 @@ export const useAuthStore = defineStore('auth', () => {
   const { rLogin } = rpcAuth()
 
   const login = (async (payload: { username: string, password: string }) => {
-    console.log('username:', payload.username, '---password:', payload.password)
     const response = await rLogin(payload.username, payload.password)
     if (!response) {
       return Promise.reject()
