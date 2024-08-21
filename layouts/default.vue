@@ -44,9 +44,9 @@ onBeforeUnmount(() => {
       <v-app-bar-title></v-app-bar-title>
     </v-app-bar>
     <v-main>
+      <v-progress-linear model-value="20" :active="waitDialog" color="primary" indeterminate></v-progress-linear>
       <slot />
     </v-main>
-
     <v-snackbar v-model="snacko.open" :color="snacko.color" multi-line>
       {{ snacko.message }}
 

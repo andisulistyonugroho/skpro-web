@@ -4,24 +4,51 @@ definePageMeta({
   middleware: 'auth'
 })
 
-const { $dayjs } = useNuxtApp()
+const { $dayjs, $debounce, $bus } = useNuxtApp()
 const { user } = useAuthStore()
 const { getCustomerOfEntity } = useCustomerStore()
 const { customers } = storeToRefs(useCustomerStore())
 const { getArea } = useAreaStore()
 const { areas } = storeToRefs(useAreaStore())
+const { getPricelist, getPricelistDetail } = useSalesOrderStore()
+const { pricelists, pricelistDetail } = storeToRefs(useSalesOrderStore())
 
 
 await getCustomerOfEntity(user.enId)
-console.log('abis await terbitlah:', customers)
 await getArea()
-
-const priceLists = ['HARGA JUAL OUTLET BYL CV.SOSIS']
+await getPricelist()
 
 const payload = ref({
   soDate: $dayjs().toDate(),
-  ptnrId: null
+  enId: user.enId,
+  ptnrId: null,
+  piId: null,
+  areaId: null
 })
+
+const piOid = computed(() => {
+  if (!payload.value.piId && pricelists.value) return null
+
+  const found = pricelists.value.find(obj => obj.piId === payload.value.piId)
+  return found.piOid
+})
+
+const doGetProduct = $debounce(async () => {
+  try {
+    if (payload.value.piId && payload.value.areaId) {
+      $bus.$emit('waitDialog', true)
+      await getPricelistDetail({
+        piOid: piOid.value,
+        enId: payload.value.enId,
+        paymentType: 9941,
+        areaId: payload.value.areaId
+      })
+      $bus.$emit('waitDialog', false)
+    }
+  } catch (error) {
+    $bus.$emit('waitDialog', false)
+  }
+}, 1000, { leading: true, trailing: false })
 
 const headers = [
   { title: 'Boat Type', align: 'start', key: 'name' },
@@ -30,70 +57,8 @@ const headers = [
   { title: 'Price ($)', align: 'end', key: 'price' },
   { title: 'Year', align: 'end', key: 'year' }
 ]
+const search = ref()
 const boats = [
-  {
-    name: 'Speedster',
-    speed: 35,
-    length: 22,
-    price: 300000,
-    year: 2021
-  },
-  {
-    name: 'OceanMaster',
-    speed: 25,
-    length: 35,
-    price: 500000,
-    year: 2020
-  },
-  {
-    name: 'Voyager',
-    speed: 20,
-    length: 45,
-    price: 700000,
-    year: 2019
-  },
-  {
-    name: 'WaveRunner',
-    speed: 40,
-    length: 19,
-    price: 250000,
-    year: 2022
-  },
-  {
-    name: 'SeaBreeze',
-    speed: 28,
-    length: 31,
-    price: 450000,
-    year: 2018
-  },
-  {
-    name: 'HarborGuard',
-    speed: 18,
-    length: 50,
-    price: 800000,
-    year: 2017
-  },
-  {
-    name: 'SlickFin',
-    speed: 33,
-    length: 24,
-    price: 350000,
-    year: 2021
-  },
-  {
-    name: 'StormBreaker',
-    speed: 22,
-    length: 38,
-    price: 600000,
-    year: 2020,
-  },
-  {
-    name: 'WindSail',
-    speed: 15,
-    length: 55,
-    price: 900000,
-    year: 2019,
-  },
   {
     name: 'FastTide',
     speed: 37,
@@ -122,14 +87,19 @@ const boats = [
             </v-autocomplete>
           </v-col>
           <v-col cols="12" md="6">
-            <v-autocomplete item-value="areaId" item-title="areaName" :items="areas" label="Pricelist Area" />
-            <v-autocomplete :items="priceLists" label="Pricelist" />
+            <v-autocomplete v-model="payload.piId" item-value="piId" item-title="piDesc" :items="pricelists"
+              label="Pricelist" @update:model-value="doGetProduct" />
+            <v-autocomplete v-model="payload.areaId" item-value="areaId" item-title="areaName" :items="areas"
+              label="Area" @update:model-value="doGetProduct" />
           </v-col>
           {{ payload }}
         </v-row>
         <v-row>
           <v-col cols="12">
-            <v-data-table :headers="headers" :items="boats" height="400" item-value="name" hide-default-footer />
+            {{ pricelistDetail }}
+            <v-text-field label="Search" v-model="search" />
+            <v-data-table :headers="headers" :items="boats" :search="search" height="400" item-value="name"
+              hide-default-footer />
           </v-col>
         </v-row>
       </v-card-text>

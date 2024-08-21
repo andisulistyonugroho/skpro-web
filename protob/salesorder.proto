@@ -1,0 +1,50 @@
+syntax = "proto3";
+option optimize_for = SPEED;
+option go_package = "github.com/andisulistyonugroho/skpro-auth";
+
+service SalesOrder {
+    rpc GetPricelist (GpRequest) returns (GpResponse);
+    rpc GetPricelistDetail (GpdRequest) returns (GpdResponse);
+}
+
+message GpRequest {
+    optional int32 en_id = 1;
+}
+
+message GpResponse {
+    repeated PricelistType data = 1;
+}
+
+message PricelistType {
+    int32 pi_id = 1;
+    int32 en_id = 2;
+    string pi_code = 3;
+    string pi_desc = 4;
+    string pi_start_date = 5;
+    string pi_end_date = 6;
+    string pi_active = 7;
+    int32 area_id = 8;
+    string pi_oid = 9;
+}
+
+message GpdRequest {
+    string pi_oid = 1;
+    int32 en_id = 2;
+    int32 payment_type = 3;
+    int32 area_id = 4;
+}
+
+message GpdResponse {
+    repeated PricelistDetail data = 1;
+}
+
+message PricelistDetail {
+    int32 pt_id = 1;
+    string title = 2;
+    string pidd_oid = 3;
+    float price = 4;
+    float discount = 5;
+    float dp = 6;
+    int32 min_qty = 7;
+    int32 area_id = 8;
+}
