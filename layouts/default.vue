@@ -3,7 +3,7 @@ const { $bus } = useNuxtApp()
 const { user } = useAuthStore()
 
 const waitDialog = ref(false)
-const drawer = ref(true)
+const drawer = ref(false)
 const snacko = ref({
   message: '',
   color: '',
@@ -35,13 +35,13 @@ onBeforeUnmount(() => {
 </script>
 <template>
   <v-app>
-    <v-navigation-drawer v-model="drawer">
+    <v-navigation-drawer v-model="drawer" app temporary>
       <div class="pt-3 px-3">Wilujeng, {{ user.profile.userName }}</div>
       <LazyTheMenu />
     </v-navigation-drawer>
     <v-app-bar density="compact">
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-app-bar-title></v-app-bar-title>
+      <v-app-bar-title>Exapro</v-app-bar-title>
     </v-app-bar>
     <v-main>
       <v-progress-linear model-value="20" :active="waitDialog" color="primary" indeterminate></v-progress-linear>
@@ -51,7 +51,8 @@ onBeforeUnmount(() => {
       {{ snacko.message }}
 
       <template v-slot:actions>
-        <v-btn :color="snacko.color" variant="text" @click="snacko.open = false">
+        <v-btn prepend-icon="i-mdi-close" color="white" variant="outlined" density="compact"
+          @click="snacko.open = false">
           Close
         </v-btn>
       </template>

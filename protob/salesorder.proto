@@ -47,4 +47,5 @@ message PricelistDetail {
     float dp = 6;
     int32 min_qty = 7;
     int32 area_id = 8;
+    string unit = 9;
 }
