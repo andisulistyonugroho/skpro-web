@@ -2,8 +2,9 @@
 const props = defineProps({
   dialog: { type: Boolean, default: false }
 })
+const { $debounce } = useNuxtApp()
 const { pricelistDetail } = storeToRefs(useSalesOrderStore())
-const emit = defineEmits(['closeit'])
+const emit = defineEmits(['closeit', 'add2cart'])
 const selected = ref({
   ptId: 0,
   title: '',
@@ -16,17 +17,18 @@ const selected = ref({
   unit: ''
 })
 const qty = ref(0)
+const theForm = ref()
 
 const optPrice = {
   number: { locale: 'id' },
   onMaska: (detail: any) => {
-    selected.value.price = detail.unmasked
+    selected.value.price = parseFloat(detail.unmasked)
   }
 }
 const optQty = {
   number: { locale: 'id' },
   onMaska: (detail: any) => {
-    qty.value = detail.unmasked
+    qty.value = parseInt(detail.unmasked)
   }
 }
 const optTotal = {
@@ -52,50 +54,55 @@ watch(props, (val) => {
     }
   }
 })
+
+const add2Cart = $debounce(async () => {
+  const validation = await theForm.value.validate()
+  if (!validation.valid) {
+    return true
+  }
+
+  const data = { ...selected.value, qty: qty.value, total: total.value }
+  emit('add2cart', data)
+  emit('closeit')
+}, 1000, { leading: true, trailing: false })
 </script>
 
 <template>
-  <v-dialog v-model="props.dialog" width="30%">
+  <v-dialog v-model="props.dialog" width="50%">
     <v-card flat>
       <v-toolbar dark color="primary">
         <v-btn icon="i-mdi-close" dark @click="emit('closeit')" />
-        <v-toolbar-title>Rincian barang</v-toolbar-title>
+        <v-toolbar-title>Product detail</v-toolbar-title>
       </v-toolbar>
       <v-card-text class="px-3 py-6">
         <v-form ref="theForm" lazy-validation>
           <v-row no-gutters>
             <v-col cols="12">
-              <v-autocomplete v-model="selected" :rules="[v => !!v || 'Item required']" item-value="ptId"
-                :items="pricelistDetail" label="Nama barang" return-object density="compact" />
+              <v-autocomplete v-model="selected" :rules="[v => !!v.title || 'Item required']" item-value="ptId"
+                :items="pricelistDetail" label="Name" return-object density="compact" />
             </v-col>
-            <v-col cols="7">
-              <v-text-field :value="selected ? selected.price : 0" v-maska="optPrice" label="@Harga Jual" readonly
-                density="compact" prefix="Rp" />
-            </v-col>
-            <v-col cols="5">
-              <v-text-field :value="selected ? selected.discount : 0" label="@Diskon" readonly density="compact"
-                prefix="Rp" class="pl-2" />
+            <v-col cols="9">
+              <v-text-field :value="selected ? selected.price : 0" v-maska="optPrice" label="@Price" readonly
+                density="compact" prefix="Rp" class="pr-2" />
             </v-col>
             <v-col cols="3">
-              <v-text-field label="Kuantiti" :rules="[v => !!v || 'Item required']" v-maska="optQty" density="compact"
+              <v-text-field :value="selected ? selected.discount : 0" label="@Discount" readonly density="compact"
+                prefix="Rp" />
+            </v-col>
+            <v-col cols="3">
+              <v-text-field label="Qty" :rules="[v => !!v || 'Item required']" v-maska="optQty" density="compact"
                 :suffix="selected ? selected.unit : 'pcs'" />
             </v-col>
             <v-col cols="9">
-              <v-text-field :value="total" label="Total harga" v-maska="optTotal" readonly density="compact" prefix="Rp"
+              <v-text-field :value="total" label="Total" v-maska="optTotal" readonly density="compact" prefix="Rp"
                 class="pl-2" />
-            </v-col>
-            <v-col cols="12">
-              <v-autocomplete label="Gudang" density="compact" />
-              <v-autocomplete label="Nama Penjual" density="compact" />
             </v-col>
           </v-row>
         </v-form>
-        {{ total }}
-        {{ selected }}
       </v-card-text>
       <v-card-actions>
-        <v-btn>batal</v-btn>
-        <v-btn variant="tonal">simpan</v-btn>
+        <v-btn>cancel</v-btn>
+        <v-btn prepend-icon="i-mdi-cart-outline" variant="tonal" @click="add2Cart">add</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
