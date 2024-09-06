@@ -35,16 +35,17 @@ const doLogin = $debounce(async () => {
               <v-card-text class="pt-10">
                 <v-form ref="loginF" lazy-validation>
                   <v-text-field v-model="payload.username" :rules="[v => !!v || 'item required']" variant="underlined"
-                    rounded="lg" label="Username*" clearable />
+                    rounded="lg" label="Username*" clearable id="username" />
                   <v-text-field v-model="payload.password" :rules="[v => !!v || 'item required']" rounded="lg"
-                    variant="underlined" label="Password*" :append-inner-icon="passType ? 'mdi-eye-off' : 'mdi-eye'"
-                    :type="passType ? 'password' : 'text'" @click:append-inner="passType = !passType" clearable />
+                    variant="underlined" label="Password*" :append-inner-icon="passType ? 'i-mdi-eye-off' : 'i-mdi-eye'"
+                    :type="passType ? 'password' : 'text'" @click:append-inner="passType = !passType" clearable
+                    id="password" />
                 </v-form>
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn size="large" color="secondary" rounded="lg" block variant="flat" class="text-capitalize"
-                  @click="doLogin">
+                  @click="doLogin" id="btn-login">
                   Masuk&nbsp;
                   <v-icon right class="i-mdi-login"></v-icon>
                 </v-btn>

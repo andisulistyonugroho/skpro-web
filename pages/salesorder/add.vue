@@ -109,7 +109,7 @@ const add2Cart = ((data) => {
     <v-row no-gutters>
       <v-col cols="4">
         <v-autocomplete v-model="payload.ptnrId" :items="customers" item-value="ptnrId" item-title="ptnrName"
-          label="Customer" density="compact" :rules="[v => !!v || 'Item required']" class="pr-2">
+          label="Customer" density="compact" :rules="[v => !!v || 'Item required']" class="pr-2" id="customer">
           <template v-slot:item="{ props, item }">
             <v-list-item v-bind="props" :subtitle="item.raw.ptnrId" />
           </template>
@@ -120,18 +120,19 @@ const add2Cart = ((data) => {
       </v-col>
       <v-col cols="4">
         <v-autocomplete v-model="payload.piId" item-value="piId" item-title="piDesc" :items="pricelists"
-          label="Pricelist" density="compact" class="pr-2" />
+          label="Pricelist" density="compact" class="pr-2" id="pl" />
       </v-col>
       <v-col cols="2">
         <v-autocomplete v-model="payload.areaId" item-value="areaId" item-title="areaName" :items="areas" label="Area"
-          density="compact" />
+          density="compact" id="area" />
       </v-col>
       <v-col cols="2">
         <v-date-input v-model="payload.soDate" prepend-icon="" density="compact" label="Transaction date"
           class="pl-2" />
       </v-col>
       <v-col cols="12">
-        <v-btn density="compact" class="text-capitalize" variant="tonal" @click="openDProduct">choose
+        <v-btn density="compact" class="text-capitalize" variant="tonal" @click="openDProduct"
+          id="btn-choose-product">choose
           product</v-btn>
       </v-col>
     </v-row>
@@ -159,19 +160,19 @@ const add2Cart = ((data) => {
           <v-row no-gutters>
             <v-col cols="3" class="text-right">
               <label>Sub Total</label>
-              <div>Rp {{ toMoney(subTotal) }}</div>
+              <div>Rp <span id="subtotal">{{ toMoney(subTotal) }}</span></div>
             </v-col>
             <v-col cols="3" class="text-right">
               <label>Discount</label>
-              <div>Rp -</div>
+              <div>Rp <span id="discount">0</span></div>
             </v-col>
             <v-col cols="3" class="text-right">
               <label>VAT (11%)</label>
-              <div>Rp {{ toMoney(vat) }}</div>
+              <div>Rp <span id="vat">{{ toMoney(vat) }}</span></div>
             </v-col>
             <v-col cols="3" class="text-right">
               <label>Total</label>
-              <div>Rp {{ toMoney(total) }}</div>
+              <div>Rp <span id="total">{{ toMoney(total) }}</span></div>
             </v-col>
           </v-row>
         </v-sheet>

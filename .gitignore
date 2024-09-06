@@ -25,3 +25,6 @@ protob-gen
 .env
 .env.*
 !.env.example
+
+cypress.env.json
+cypress/downloads

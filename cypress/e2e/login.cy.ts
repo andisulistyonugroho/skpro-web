@@ -1,5 +1,8 @@
-describe('template spec', () => {
+describe('login', () => {
   it('passes', () => {
-    cy.visit('https://example.cypress.io')
+    cy.visit('/login')
+    cy.get('input#username').type(Cypress.env('lUsername'))
+    cy.get('input#password').type(Cypress.env('lPassword'))
+    cy.get('#btn-login').click()
   })
 })
