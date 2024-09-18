@@ -5,7 +5,7 @@ export default defineConfig({
     setupNodeEvents(on, config) {
       // implement node event listeners here
     },
-    baseUrl: 'http://0.0.0.0:8080',
+    baseUrl: 'http://localhost:8080',
     testIsolation: true
   },
 });

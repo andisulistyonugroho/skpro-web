@@ -18,9 +18,9 @@
     "lodash.debounce": "^4.0.8",
     "maska": "^3.0.0",
     "mitt": "^3.0.1",
-    "nuxt": "^3.12.4",
+    "nuxt": "^3.13.2",
     "pinia": "2.2.0",
-    "vue": "3.4.35",
+    "vue": "3.5.6",
     "vuetify-nuxt-module": "^0.16.1"
   },
   "devDependencies": {
