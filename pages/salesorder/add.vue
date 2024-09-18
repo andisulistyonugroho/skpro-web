@@ -10,8 +10,8 @@ const { getCustomerOfEntity } = useCustomerStore()
 const { customers } = storeToRefs(useCustomerStore())
 const { getArea } = useAreaStore()
 const { areas } = storeToRefs(useAreaStore())
-const { getPricelist, getPricelistDetail } = useSalesOrderStore()
-const { pricelists, pricelistDetail } = storeToRefs(useSalesOrderStore())
+const { getPricelist, getPricelistDetail, newOrder } = useSalesOrderStore()
+const { pricelists } = storeToRefs(useSalesOrderStore())
 
 
 await getCustomerOfEntity(user.enId)
@@ -20,8 +20,9 @@ await getPricelist()
 
 const payload = ref({
   soDate: $dayjs().toDate(),
+  soAddBy: user.profile.userName,
   enId: user.enId,
-  ptnrIdSold: null,
+  ptnrIdBill: null,
   piId: null,
   areaId: null
 })
@@ -59,7 +60,6 @@ const vat = computed(() => {
 })
 
 const total = computed(() => {
-  console.log(subTotal.value)
   return subTotal.value + vat.value
 })
 
@@ -85,7 +85,7 @@ const calcTotal = $debounce(async (data) => {
 }, 500, { leading: false, trailing: true })
 
 const openDProduct = $debounce(async () => {
-  if (!payload.value.piId || !payload.value.areaId || !payload.value.ptnrIdSold) {
+  if (!payload.value.piId || !payload.value.areaId || !payload.value.ptnrIdBill) {
     $bus.$emit('waitDialog', false)
     const error = new Error('Choose Customer, Pricelist and Area first')
     $bus.$emit('errorSnack', error)
@@ -106,6 +106,28 @@ const add2Cart = ((data: any) => {
   }
 })
 
+const doSubmit = $debounce(async () => {
+  try {
+    $bus.$emit('waitDialog', true)
+    console.log('do submit')
+    console.log(payload.value.enId)
+    await newOrder({
+      salesOrder: {
+        soEnId: payload.value.enId,
+        soPtnrIdBill: payload.value.ptnrIdBill,
+        soDate: payload.value.soDate,
+        soAddBy: payload.value.soAddBy,
+        soPiId: payload.value.piId,
+        soDiscHeader: 0,
+        soTotal: total.value
+      }
+    })
+    $bus.$emit('waitDialog', false)
+  } catch (error) {
+    $bus.$emit('waitDialog', false)
+  }
+}, 1000, { leading: true, trailing: false })
+
 </script>
 <template>
   <v-tabs v-model="tab" align-tabs="start" color="primary" class="mb-3">
@@ -115,7 +137,7 @@ const add2Cart = ((data: any) => {
   <v-container fluid>
     <v-row no-gutters>
       <v-col cols="4">
-        <v-autocomplete v-model="payload.ptnrIdSold" :items="customers" item-value="ptnrId" item-title="ptnrName"
+        <v-autocomplete v-model="payload.ptnrIdBill" :items="customers" item-value="ptnrId" item-title="ptnrName"
           label="Customer" density="compact" :rules="[(v: string) => !!v || 'Item required']" class="pr-2"
           id="customer">
           <template v-slot:item="{ props, item }">
@@ -188,7 +210,7 @@ const add2Cart = ((data: any) => {
     </v-row>
     <div class="text-right mt-5">
       <v-btn class="mr-3" variant="outlined">cancel</v-btn>
-      <v-btn id="btn-submit">submit</v-btn>
+      <v-btn id="btn-submit" @click="doSubmit">submit</v-btn>
     </div>
   </v-container>
   <LazyOrdersProductSelection :dialog="productD" @closeit="productD = false" @add2cart="add2Cart" />

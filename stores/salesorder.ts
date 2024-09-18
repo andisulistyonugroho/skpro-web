@@ -5,7 +5,7 @@ export const useSalesOrderStore = defineStore('salesorder', () => {
   const pricelists = ref<PricelistType[]>([])
   const pricelistDetail = ref<PricelistDetail[]>([])
 
-  const { rGetPricelist, rGetPricelistDetail } = rpcSalesOrder()
+  const { rGetPricelist, rGetPricelistDetail, rNewOrder } = rpcSalesOrder()
 
   const getPricelist = (async () => {
     const response = await rGetPricelist()
@@ -21,5 +21,12 @@ export const useSalesOrderStore = defineStore('salesorder', () => {
     pricelistDetail.value = response
   })
 
-  return { pricelists, pricelistDetail, getPricelist, getPricelistDetail }
+  const newOrder = (async (payload: any) => {
+    const response = await rNewOrder(payload)
+    if (!response) return Promise.reject()
+
+    console.log('new order response:', response)
+  })
+
+  return { pricelists, pricelistDetail, getPricelist, getPricelistDetail, newOrder }
 })
