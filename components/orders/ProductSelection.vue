@@ -12,7 +12,6 @@ const selected = ref({
   price: 0,
   discount: 0,
   dp: 0,
-  minQty: 0,
   areaId: 0,
   unit: ''
 })
@@ -48,7 +47,6 @@ watch(props, (val) => {
       price: 0,
       discount: 0,
       dp: 0,
-      minQty: 0,
       areaId: 0,
       unit: ''
     }
@@ -78,20 +76,20 @@ const add2Cart = $debounce(async () => {
         <v-form ref="theForm" lazy-validation>
           <v-row no-gutters>
             <v-col cols="12">
-              <v-autocomplete v-model="selected" :rules="[v => !!v.title || 'Item required']" item-value="ptId"
-                :items="pricelistDetail" label="Name" return-object density="compact" id="product" />
+              <v-autocomplete v-model="selected" :rules="[(v: any) => !!v && v.length > 0 || 'Item required']"
+                item-value="ptId" :items="pricelistDetail" label="Name" return-object density="compact" id="product" />
             </v-col>
             <v-col cols="9">
               <v-text-field :value="selected ? selected.price : 0" v-maska="optPrice" label="@Price" readonly
                 density="compact" prefix="Rp" class="pr-2" />
             </v-col>
             <v-col cols="3">
-              <v-text-field :value="selected ? selected.discount : 0" label="@Discount" readonly density="compact"
-                prefix="Rp" />
+              <v-text-field :value="selected ? selected.discount : 0" v-maska="optTotal" label="@Discount" readonly
+                density="compact" prefix="Rp" />
             </v-col>
             <v-col cols="3">
-              <v-text-field label="Qty" :rules="[v => !!v || 'Item required']" v-maska="optQty" density="compact"
-                :suffix="selected ? selected.unit : 'pcs'" id="qty" />
+              <v-text-field label="Qty" :rules="[(v: string) => !!v || 'Item required']" v-maska="optQty"
+                density="compact" :suffix="selected ? selected.unit : 'pcs'" id="qty" />
             </v-col>
             <v-col cols="9">
               <v-text-field :value="total" label="Total" v-maska="optTotal" readonly density="compact" prefix="Rp"
@@ -101,7 +99,7 @@ const add2Cart = $debounce(async () => {
         </v-form>
       </v-card-text>
       <v-card-actions>
-        <v-btn>cancel</v-btn>
+        <v-btn @click="theForm.reset()">cancel</v-btn>
         <v-btn prepend-icon="i-mdi-cart-outline" variant="tonal" @click="add2Cart" id="btn-add">add</v-btn>
       </v-card-actions>
     </v-card>
