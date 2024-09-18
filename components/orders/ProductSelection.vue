@@ -5,23 +5,26 @@ const props = defineProps({
 const { $debounce } = useNuxtApp()
 const { pricelistDetail } = storeToRefs(useSalesOrderStore())
 const emit = defineEmits(['closeit', 'add2cart'])
-const selected = ref({
-  ptId: 0,
-  title: '',
-  piddOid: '',
-  price: 0,
-  discount: 0,
-  dp: 0,
-  areaId: 0,
-  unit: ''
-})
+interface PriceList {
+  ptId: number,
+  title: string,
+  piddOid: string,
+  price: number,
+  discount: number,
+  dp: number,
+  areaId: number,
+  unit: string
+}
+const selected = ref<PriceList>()
 const qty = ref(0)
 const theForm = ref()
 
 const optPrice = {
   number: { locale: 'id' },
   onMaska: (detail: any) => {
-    selected.value.price = parseFloat(detail.unmasked)
+    if (selected.value) {
+      selected.value.price = parseFloat(detail.unmasked)
+    }
   }
 }
 const optQty = {
@@ -38,21 +41,6 @@ const total = computed(() => {
   return selected.value ? qty.value * selected.value.price : 0
 })
 
-watch(props, (val) => {
-  if (val.dialog === true) {
-    selected.value = {
-      ptId: 0,
-      title: '',
-      piddOid: '',
-      price: 0,
-      discount: 0,
-      dp: 0,
-      areaId: 0,
-      unit: ''
-    }
-  }
-})
-
 const add2Cart = $debounce(async () => {
   const validation = await theForm.value.validate()
   if (!validation.valid) {
@@ -61,6 +49,7 @@ const add2Cart = $debounce(async () => {
 
   const data = { ...selected.value, qty: qty.value, total: total.value }
   emit('add2cart', data)
+  await theForm.value.reset()
   emit('closeit')
 }, 1000, { leading: true, trailing: false })
 </script>
@@ -76,8 +65,8 @@ const add2Cart = $debounce(async () => {
         <v-form ref="theForm" lazy-validation>
           <v-row no-gutters>
             <v-col cols="12">
-              <v-autocomplete v-model="selected" :rules="[(v: any) => !!v && v.length > 0 || 'Item required']"
-                item-value="ptId" :items="pricelistDetail" label="Name" return-object density="compact" id="product" />
+              <v-autocomplete v-model="selected" :rules="[(v: any) => !!v || 'Item required']" item-value="ptId"
+                :items="pricelistDetail" label="Name" return-object density="compact" id="product" />
             </v-col>
             <v-col cols="9">
               <v-text-field :value="selected ? selected.price : 0" v-maska="optPrice" label="@Price" readonly
