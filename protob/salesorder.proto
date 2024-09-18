@@ -5,6 +5,7 @@ option go_package = "github.com/andisulistyonugroho/skpro-auth";
 service SalesOrder {
     rpc GetPricelist (GpRequest) returns (GpResponse);
     rpc GetPricelistDetail (GpdRequest) returns (GpdResponse);
+    rpc NewOrder(NsoRequest) returns (NsoResponse);
 }
 
 message GpRequest {
@@ -48,4 +49,41 @@ message PricelistDetail {
     int32 min_qty = 7;
     int32 area_id = 8;
     string unit = 9;
+}
+
+message NsoRequest {
+    TheOrderReq sales_order = 1;
+    repeated OrderDetailReq sales_order_detail = 2;
+}
+
+message TheOrderReq {
+    int32 so_en_id = 1;
+    int32 so_ptnr_id_sold = 2;
+    string so_date = 3;
+    int32 so_sales_person = 4;
+    int32 so_pi_id = 5;
+    float so_disc_header = 6;
+    float so_total = 7;
+}
+
+message OrderDetailReq {
+    int32 sod_pt_id = 1;
+    int32 sod_qty = 2;
+    float sod_price = 3;
+    float sod_disc = 4;
+}
+
+message NsoResponse {
+    TheOrder sales_order = 1;
+    repeated OrderDetail sales_order_detail = 2;
+}
+
+message TheOrder {
+    optional string so_oid = 1;
+    int32 so_en_id = 2;
+    string so_date = 3;
+}
+
+message OrderDetail {
+    optional string sod_oid = 1;
 }
