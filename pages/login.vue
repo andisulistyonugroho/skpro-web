@@ -31,7 +31,7 @@ const doLogin = $debounce(async () => {
         <v-row>
           <v-col cols="12" md="4" offset-md="4">
             <v-card variant="tonal" color="secondary" class="pt-10 pb-5" rounded="xl">
-              <v-card-title class="text-center">Central Kitchen</v-card-title>
+              <v-card-title class="text-center">EXAPRO</v-card-title>
               <v-card-text class="pt-10">
                 <v-form ref="loginF" lazy-validation>
                   <v-text-field v-model="payload.username" :rules="[v => !!v || 'item required']" variant="underlined"

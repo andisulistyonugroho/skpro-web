@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 definePageMeta({
   layout: 'default',
   middleware: 'auth'
@@ -21,12 +21,12 @@ await getPricelist()
 const payload = ref({
   soDate: $dayjs().toDate(),
   enId: user.enId,
-  ptnrId: null,
+  ptnrIdSold: null,
   piId: null,
   areaId: null
 })
 
-const shoppingCart = ref([])
+const shoppingCart = ref<any>([])
 const headers = [
   { title: 'Item', align: 'start', key: 'title', width: '*' },
   { title: 'Unit', align: 'end', key: 'unit', width: '5%' },
@@ -36,18 +36,22 @@ const headers = [
 ]
 const search = ref()
 const productD = ref(false)
+const tab = ref(2)
 
 const piOid = computed(() => {
-  if (!payload.value.piId && pricelists.value) return null
+  if (!payload.value.piId && pricelists.value) return ''
 
   const found = pricelists.value.find(obj => obj.piId === payload.value.piId)
-  return found.piOid
+  return found ? found.piOid : ''
 })
 
 const subTotal = computed(() => {
-  return shoppingCart.value.reduce((prev, current) => {
-    return prev + current.total
-  }, 0)
+  let total = 0
+  let row = <any>[]
+  for (row of shoppingCart.value) {
+    total += row.total
+  }
+  return total
 })
 
 const vat = computed(() => {
@@ -81,7 +85,7 @@ const calcTotal = $debounce(async (data) => {
 }, 500, { leading: false, trailing: true })
 
 const openDProduct = $debounce(async () => {
-  if (!payload.value.piId || !payload.value.areaId || !payload.value.ptnrId) {
+  if (!payload.value.piId || !payload.value.areaId || !payload.value.ptnrIdSold) {
     $bus.$emit('waitDialog', false)
     const error = new Error('Choose Customer, Pricelist and Area first')
     $bus.$emit('errorSnack', error)
@@ -92,8 +96,8 @@ const openDProduct = $debounce(async () => {
   productD.value = true
 }, 1000, { leading: true, trailing: false })
 
-const add2Cart = ((data) => {
-  const found = shoppingCart.value.find(obj => obj.ptId === data.ptId)
+const add2Cart = ((data: any) => {
+  const found: any = shoppingCart.value.find((obj: any) => obj.ptId === data.ptId)
   if (found) {
     found.qty += data.qty
     found.total += data.total
@@ -104,12 +108,16 @@ const add2Cart = ((data) => {
 
 </script>
 <template>
+  <v-tabs v-model="tab" align-tabs="start" color="primary" class="mb-3">
+    <v-tab :value="1" to="/salesorder">List</v-tab>
+    <v-tab :value="2" to="/salesorder/add">New</v-tab>
+  </v-tabs>
   <v-container fluid>
-    <h4 class="pb-3">New Order</h4>
     <v-row no-gutters>
       <v-col cols="4">
-        <v-autocomplete v-model="payload.ptnrId" :items="customers" item-value="ptnrId" item-title="ptnrName"
-          label="Customer" density="compact" :rules="[v => !!v || 'Item required']" class="pr-2" id="customer">
+        <v-autocomplete v-model="payload.ptnrIdSold" :items="customers" item-value="ptnrId" item-title="ptnrName"
+          label="Customer" density="compact" :rules="[(v: string) => !!v || 'Item required']" class="pr-2"
+          id="customer">
           <template v-slot:item="{ props, item }">
             <v-list-item v-bind="props" :subtitle="item.raw.ptnrId" />
           </template>
@@ -153,7 +161,7 @@ const add2Cart = ((data) => {
     <v-row no-gutters>
       <v-col cols="6">
         <v-textarea variant="outlined" label="Order Notes" class="mt-5 mr-3 rounded-lg" rows="3" counter
-          :rules="[v => v && v.length <= 300 || 'Max 300 characters']" />
+          :rules="[(v: string) => v && v.length <= 300 || 'Max 300 characters']" />
       </v-col>
       <v-col cols="6">
         <v-sheet rounded class="mt-5 pa-3 border">
@@ -180,7 +188,7 @@ const add2Cart = ((data) => {
     </v-row>
     <div class="text-right mt-5">
       <v-btn class="mr-3" variant="outlined">cancel</v-btn>
-      <v-btn>submit</v-btn>
+      <v-btn id="btn-submit">submit</v-btn>
     </div>
   </v-container>
   <LazyOrdersProductSelection :dialog="productD" @closeit="productD = false" @add2cart="add2Cart" />
