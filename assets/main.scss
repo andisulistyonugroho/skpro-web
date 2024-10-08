@@ -3,7 +3,7 @@ $font-size: 13px;
 @use 'vuetify/lib/styles/main.sass' with (
   $color-pack: true,
   $body-font-family: $font,
-  $font-size-root: $font-size
+  // $font-size-root: $font-size
 );
 
 .text-tiny {

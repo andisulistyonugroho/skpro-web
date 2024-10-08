@@ -57,33 +57,28 @@ message NsoRequest {
 }
 
 message TheOrderReq {
-    int32 so_en_id = 1;
-    int32 so_ptnr_id_bill = 2;
-    string so_date = 3;
-    string so_add_by = 4;
-    int32 so_pi_id = 5;
-    float so_disc_header = 6;
-    float so_total = 7;
+    int32 so_dom_id = 1;
+    int32 so_en_id = 2;
+    string so_add_by = 3;
+    int32 so_ptnr_id_sold = 4;
+    string so_date = 5;
+    int32 so_sales_person = 6;
+    int32 so_pi_id = 7;
+    int32 so_pay_type = 8;
+    int32 so_pay_method = 9;
+    double so_disc_header = 10;
+    double so_total = 11;
+    string so_trans_rmks = 12;
 }
 
 message OrderDetailReq {
     int32 sod_pt_id = 1;
     int32 sod_qty = 2;
-    float sod_price = 3;
-    float sod_disc = 4;
+    double sod_price = 3;
+    double sod_disc = 4;
+    int32 sod_loc_id = 5;
 }
 
 message NsoResponse {
-    TheOrder sales_order = 1;
-    repeated OrderDetail sales_order_detail = 2;
-}
-
-message TheOrder {
-    optional string so_oid = 1;
-    int32 so_en_id = 2;
-    string so_date = 3;
-}
-
-message OrderDetail {
-    optional string sod_oid = 1;
+    string so_oid = 1;
 }

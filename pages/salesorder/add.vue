@@ -34,10 +34,11 @@ const headers = [
   { title: 'Price', align: 'end', key: 'price', width: '20%' },
   { title: 'Qty', align: 'end', key: 'qty', width: '10%' },
   { title: 'Total', align: 'end', key: 'total', width: '30%' }
-]
+] as const
 const search = ref()
 const productD = ref(false)
 const tab = ref(2)
+const theForm = ref()
 
 const piOid = computed(() => {
   if (!payload.value.piId && pricelists.value) return ''
@@ -81,7 +82,8 @@ const doGetProduct = $debounce(async () => {
 }, 1000, { leading: true, trailing: false })
 
 const calcTotal = $debounce(async (data) => {
-  data.total = parseInt(data.qty) * data.price
+  data.item.total = parseInt(data.value) * data.item.price
+  data.item.qty = data.value
 }, 500, { leading: false, trailing: true })
 
 const openDProduct = $debounce(async () => {
@@ -135,48 +137,55 @@ const doSubmit = $debounce(async () => {
     <v-tab :value="2" to="/salesorder/add">New</v-tab>
   </v-tabs>
   <v-container fluid>
-    <v-row no-gutters>
-      <v-col cols="4">
-        <v-autocomplete v-model="payload.ptnrIdBill" :items="customers" item-value="ptnrId" item-title="ptnrName"
-          label="Customer" density="compact" :rules="[(v: string) => !!v || 'Item required']" class="pr-2"
-          id="customer">
-          <template v-slot:item="{ props, item }">
-            <v-list-item v-bind="props" :subtitle="item.raw.ptnrId" />
-          </template>
-          <template v-slot:selection="{ item, index }">
-            {{ item.title }} - {{ item.value }}
-          </template>
-        </v-autocomplete>
-      </v-col>
-      <v-col cols="4">
-        <v-autocomplete v-model="payload.piId" item-value="piId" item-title="piDesc" :items="pricelists"
-          label="Pricelist" density="compact" class="pr-2" id="pl" />
-      </v-col>
-      <v-col cols="2">
-        <v-autocomplete v-model="payload.areaId" item-value="areaId" item-title="areaName" :items="areas" label="Area"
-          density="compact" id="area" />
-      </v-col>
-      <v-col cols="2">
-        <v-date-input v-model="payload.soDate" prepend-icon="" density="compact" label="Transaction date"
-          class="pl-2" />
-      </v-col>
-      <v-col cols="12">
-        <v-btn density="compact" class="text-capitalize" variant="tonal" @click="openDProduct"
-          id="btn-choose-product">choose
-          product</v-btn>
-      </v-col>
-    </v-row>
+    <v-form ref="theForm">
+      <v-row no-gutters>
+        <v-col cols="4">
+          <v-autocomplete v-model="payload.ptnrIdBill" :items="customers" item-value="ptnrId" item-title="ptnrName"
+            label="Customer" density="compact" :rules="[(v: string) => !!v || 'Item required']" class="pr-2"
+            id="customer">
+            <template v-slot:item="{ props, item }">
+              <v-list-item v-bind="props" :subtitle="item.raw.ptnrId" />
+            </template>
+            <template v-slot:selection="{ item, index }">
+              {{ item.title }} - {{ item.value }}
+            </template>
+          </v-autocomplete>
+        </v-col>
+        <v-col cols="4">
+          <v-autocomplete v-model="payload.piId" item-value="piId" item-title="piDesc" :items="pricelists"
+            label="Pricelist" :rules="[(v: string) => !!v || 'Item required']" density="compact" class="pr-2" id="pl" />
+        </v-col>
+        <v-col cols="2">
+          <v-autocomplete v-model="payload.areaId" item-value="areaId" item-title="areaName" :items="areas" label="Area"
+            :rules="[(v: string) => !!v || 'Item required']" density="compact" id="area" />
+        </v-col>
+        <v-col cols="2">
+          <v-date-input v-model="payload.soDate" prepend-icon="" density="compact" label="Transaction date"
+            :rules="[(v: string) => !!v || 'Item required']" class="pl-2" />
+        </v-col>
+        <v-col cols="12">
+          <v-btn density="compact" class="text-capitalize" variant="tonal" @click="openDProduct"
+            id="btn-choose-product">choose
+            product</v-btn>
+        </v-col>
+      </v-row>
+    </v-form>
     <v-sheet rounded class="mt-5 border">
       <v-data-table density="compact" :headers="headers" :items="shoppingCart" :search="search" item-value="name"
         hide-default-footer>
-        <template v-slot:item.price="{ item }">
-          {{ toMoney(item.price) }}
+        <template v-slot:item.title="row">
+          <!-- <v-icon color="red" @click="" icon="i-mdi-trash-can-outline" /> -->
+          <v-btn color="red" variant="plain" icon="i-mdi-delete-forever" size="small" />
+          {{ row.value }}
         </template>
-        <template v-slot:item.qty="{ item }">
-          <input type="number" v-model="item.qty" @input="calcTotal(item)" class="text-right border-solid">
+        <template v-slot:item.price="row">
+          {{ toMoney(row.value) }}
         </template>
-        <template v-slot:item.total="{ item }">
-          {{ toMoney(item.total) }}
+        <template v-slot:item.qty="row">
+          <input type="number" v-model="row.value" @input="calcTotal(row)" class="text-right border-solid" min="1">
+        </template>
+        <template v-slot:item.total="row">
+          {{ toMoney(row.value) }}
         </template>
       </v-data-table>
     </v-sheet>
@@ -209,7 +218,7 @@ const doSubmit = $debounce(async () => {
       </v-col>
     </v-row>
     <div class="text-right mt-5">
-      <v-btn class="mr-3" variant="outlined">cancel</v-btn>
+      <v-btn class="mr-3" variant="outlined" @click="shoppingCart = []; theForm.reset()">cancel</v-btn>
       <v-btn id="btn-submit" @click="doSubmit">submit</v-btn>
     </div>
   </v-container>
