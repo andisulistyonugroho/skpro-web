@@ -30,8 +30,7 @@ const payload = ref({
 const shoppingCart = ref<any>([])
 const headers = [
   { title: 'Item', align: 'start', key: 'title', width: '*' },
-  { title: 'Unit', align: 'end', key: 'unit', width: '5%' },
-  { title: 'Price', align: 'end', key: 'price', width: '20%' },
+  { title: '@Price', align: 'end', key: 'price', width: '20%' },
   { title: 'Qty', align: 'end', key: 'qty', width: '10%' },
   { title: 'Total', align: 'end', key: 'total', width: '30%' }
 ] as const
@@ -108,6 +107,10 @@ const add2Cart = ((data: any) => {
   }
 })
 
+const removeCartItem = ((id: number) => {
+  shoppingCart.value.splice(id, 1)
+})
+
 const doSubmit = $debounce(async () => {
   try {
     $bus.$emit('waitDialog', true)
@@ -174,15 +177,18 @@ const doSubmit = $debounce(async () => {
       <v-data-table density="compact" :headers="headers" :items="shoppingCart" :search="search" item-value="name"
         hide-default-footer>
         <template v-slot:item.title="row">
-          <!-- <v-icon color="red" @click="" icon="i-mdi-trash-can-outline" /> -->
-          <v-btn color="red" variant="plain" icon="i-mdi-delete-forever" size="small" />
+          <v-btn color="red" variant="plain" icon="i-mdi-delete-forever" size="small"
+            @click="removeCartItem(row.index)" />
           {{ row.value }}
         </template>
         <template v-slot:item.price="row">
           {{ toMoney(row.value) }}
         </template>
         <template v-slot:item.qty="row">
-          <input type="number" v-model="row.value" @input="calcTotal(row)" class="text-right border-solid" min="1">
+          <div class="d-flex">
+            <input type="number" v-model="row.value" @input="calcTotal(row)" class="text-right border-solid" min="1">
+            <span class="pl-1">{{ Object(row.item).unit }}</span>
+          </div>
         </template>
         <template v-slot:item.total="row">
           {{ toMoney(row.value) }}
