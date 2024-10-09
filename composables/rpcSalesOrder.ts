@@ -48,20 +48,27 @@ export default function () {
   })
 
   interface SalesOrder {
+    soDomId: number,
     soEnId: number,
-    soPtnrIdBill: number,
-    soDate: string,
     soAddBy: string,
+    soPtnrIdSold: number,
+    soDate: string,
+    soSalesPerson: number,
     soPiId: number,
+    soPayType: number,
+    soPayMethod: number,
     soDiscHeader: number,
     soTotal: number
+    soTransRmks: string,
+    soPtnrIdBill: number
   }
 
   interface SoItems {
     sodPtId: number,
     sodQty: number,
     sodPrice: number,
-    sodDisc: number
+    sodDisc: number,
+    sodLocId: number
   }
 
   const rNewOrder = (async (payload: { salesOrder: SalesOrder, salesOrderDetail: SoItems[] }) => {
