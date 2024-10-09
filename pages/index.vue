@@ -5,5 +5,5 @@ definePageMeta({
 })
 </script>
 <template>
-  <div>From the river to the sea Palestine will be free</div>
+  <div></div>
 </template>

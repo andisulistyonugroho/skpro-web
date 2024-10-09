@@ -12,6 +12,7 @@ interface PriceList {
   price: number,
   discount: number,
   dp: number,
+  minQty: number,
   areaId: number,
   unit: string
 }
