@@ -25,7 +25,7 @@ const payload = ref({
   ptnrIdBill: null,
   piId: null,
   areaId: null,
-  soSalesPerson: null,
+  soSalesPerson: 1,
   transRmks: null
 })
 
@@ -158,12 +158,12 @@ const doSubmit = $debounce(async () => {
           <v-autocomplete v-model="payload.ptnrIdBill" :items="customers" item-value="ptnrId" item-title="ptnrName"
             label="Customer" density="compact" :rules="[(v: number) => !!v || 'Item required']" class="pr-2"
             id="customer">
-            <!-- <template v-slot:item="{ props, item }">
+            <template v-slot:item="{ props, item }">
               <v-list-item v-bind="props" :subtitle="item.raw.ptnrId" />
             </template>
-<template v-slot:selection="{ item, index }">
+            <template v-slot:selection="{ item, index }">
               {{ item.title }} - {{ item.value }}
-            </template> -->
+            </template>
           </v-autocomplete>
         </v-col>
         <v-col cols="4">
