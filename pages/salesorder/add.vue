@@ -24,7 +24,9 @@ const payload = ref({
   enId: user.enId,
   ptnrIdBill: null,
   piId: null,
-  areaId: null
+  areaId: null,
+  soSalesPerson: null,
+  transRmks: null
 })
 
 const shoppingCart = ref<any>([])
@@ -118,18 +120,28 @@ const doSubmit = $debounce(async () => {
     console.log(payload.value.enId)
     await newOrder({
       salesOrder: {
+        soDomId: 1,
         soEnId: payload.value.enId,
-        soPtnrIdBill: payload.value.ptnrIdBill,
-        soDate: payload.value.soDate,
         soAddBy: payload.value.soAddBy,
+        soPtnrIdSold: payload.value.ptnrIdBill,
+        soDate: payload.value.soDate,
+        soSalesPerson: payload.value.soSalesPerson,
         soPiId: payload.value.piId,
+        soPayType: 9942,//credit
+        soPayMethod: 99290,//cash in hand
         soDiscHeader: 0,
-        soTotal: total.value
+        soTotal: total.value,
+        soTransRmks: payload.value.transRmks
       }
     })
     $bus.$emit('waitDialog', false)
+    $bus.$emit('okSnack', { color: 'green', message: 'Berhasil disimpan' })
+    shoppingCart.value = []; theForm.value.reset()
   } catch (error) {
     $bus.$emit('waitDialog', false)
+    if (error instanceof Error) {
+      $bus.$emit('errorSnack', error)
+    }
   }
 }, 1000, { leading: true, trailing: false })
 
@@ -144,19 +156,19 @@ const doSubmit = $debounce(async () => {
       <v-row no-gutters>
         <v-col cols="4">
           <v-autocomplete v-model="payload.ptnrIdBill" :items="customers" item-value="ptnrId" item-title="ptnrName"
-            label="Customer" density="compact" :rules="[(v: string) => !!v || 'Item required']" class="pr-2"
+            label="Customer" density="compact" :rules="[(v: number) => !!v || 'Item required']" class="pr-2"
             id="customer">
-            <template v-slot:item="{ props, item }">
+            <!-- <template v-slot:item="{ props, item }">
               <v-list-item v-bind="props" :subtitle="item.raw.ptnrId" />
             </template>
-            <template v-slot:selection="{ item, index }">
+<template v-slot:selection="{ item, index }">
               {{ item.title }} - {{ item.value }}
-            </template>
+            </template> -->
           </v-autocomplete>
         </v-col>
         <v-col cols="4">
           <v-autocomplete v-model="payload.piId" item-value="piId" item-title="piDesc" :items="pricelists"
-            label="Pricelist" :rules="[(v: string) => !!v || 'Item required']" density="compact" class="pr-2" id="pl" />
+            label="Pricelist" :rules="[(v: number) => !!v || 'Item required']" density="compact" class="pr-2" id="pl" />
         </v-col>
         <v-col cols="2">
           <v-autocomplete v-model="payload.areaId" item-value="areaId" item-title="areaName" :items="areas" label="Area"
@@ -177,7 +189,7 @@ const doSubmit = $debounce(async () => {
       <v-data-table density="compact" :headers="headers" :items="shoppingCart" :search="search" item-value="name"
         hide-default-footer>
         <template v-slot:item.title="row">
-          <v-btn color="red" variant="plain" icon="i-mdi-delete-forever" size="small"
+          <v-btn color="red" variant="plain" icon="i-mdi-close-circle" size="default"
             @click="removeCartItem(row.index)" />
           {{ row.value }}
         </template>
@@ -197,8 +209,8 @@ const doSubmit = $debounce(async () => {
     </v-sheet>
     <v-row no-gutters>
       <v-col cols="6">
-        <v-textarea variant="outlined" label="Order Notes" class="mt-5 mr-3 rounded-lg" rows="3" counter
-          :rules="[(v: string) => v && v.length <= 300 || 'Max 300 characters']" />
+        <v-textarea v-model="payload.transRmks" variant="outlined" label="Order Notes" class="mt-5 mr-3 rounded-lg"
+          rows="3" counter :rules="[(v: string) => v && v.length <= 300 || 'Max 300 characters']" />
       </v-col>
       <v-col cols="6">
         <v-sheet rounded class="mt-5 pa-3 border">

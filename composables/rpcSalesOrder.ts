@@ -59,8 +59,7 @@ export default function () {
     soPayMethod: number,
     soDiscHeader: number,
     soTotal: number
-    soTransRmks: string,
-    soPtnrIdBill: number
+    soTransRmks: string
   }
 
   interface SoItems {

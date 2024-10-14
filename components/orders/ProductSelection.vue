@@ -56,7 +56,7 @@ const add2Cart = $debounce(async () => {
 </script>
 
 <template>
-  <v-dialog v-model="props.dialog" width="50%">
+  <v-dialog v-model="props.dialog" width="40%">
     <v-card flat>
       <v-toolbar dark color="primary">
         <v-btn icon="i-mdi-close" dark @click="emit('closeit')" id="btn-close" />
@@ -67,7 +67,7 @@ const add2Cart = $debounce(async () => {
           <v-row no-gutters>
             <v-col cols="12">
               <v-autocomplete v-model="selected" :rules="[(v: any) => !!v || 'Item required']" item-value="ptId"
-                :items="pricelistDetail" label="Name" return-object density="compact" id="product" />
+                :items="pricelistDetail" label="Name" return-object density="compact" id="product" autocomplete="off" />
             </v-col>
             <v-col cols="9">
               <v-text-field :value="selected ? selected.price : 0" v-maska="optPrice" label="@Price" readonly
@@ -79,7 +79,7 @@ const add2Cart = $debounce(async () => {
             </v-col>
             <v-col cols="3">
               <v-text-field label="Qty" :rules="[(v: string) => !!v || 'Item required']" v-maska="optQty"
-                density="compact" :suffix="selected ? selected.unit : 'pcs'" id="qty" />
+                density="compact" :suffix="selected ? selected.unit : 'pcs'" id="qty" autocomplete="off" />
             </v-col>
             <v-col cols="9">
               <v-text-field :value="total" label="Total" v-maska="optTotal" readonly density="compact" prefix="Rp"

@@ -16,7 +16,7 @@ message cofResponse {
 }   
 
 message CustomerType {
-    string ptnr_id = 1;
+    int32 ptnr_id = 1;
     string ptnr_code = 2;
     string ptnr_name = 3;
     int32 ptnr_en_id = 4;
