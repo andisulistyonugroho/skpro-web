@@ -132,7 +132,8 @@ const doSubmit = $debounce(async () => {
         soDiscHeader: 0,
         soTotal: total.value,
         soTransRmks: payload.value.transRmks
-      }
+      },
+      salesOrderDetail: []
     })
     $bus.$emit('waitDialog', false)
     $bus.$emit('okSnack', { color: 'green', message: 'Berhasil disimpan' })
