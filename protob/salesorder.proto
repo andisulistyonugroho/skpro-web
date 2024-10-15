@@ -76,7 +76,7 @@ message OrderDetailReq {
     int32 sod_qty = 2;
     double sod_price = 3;
     double sod_disc = 4;
-    int32 sod_loc_id = 5;
+    optional int32 sod_loc_id = 5;
 }
 
 message NsoResponse {

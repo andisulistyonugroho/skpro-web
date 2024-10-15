@@ -221,12 +221,11 @@ const doSubmit = $debounce(async () => {
               <div>Rp <span id="subtotal">{{ toMoney(subTotal) }}</span></div>
             </v-col>
             <v-col cols="3" class="text-right">
-              <label>Discount</label>
-              <div>Rp <span id="discount">0</span></div>
-            </v-col>
-            <v-col cols="3" class="text-right">
               <label>VAT (11%)</label>
               <div>Rp <span id="vat">{{ toMoney(vat) }}</span></div>
+            </v-col>
+            <v-col cols="3" class="text-right">
+
             </v-col>
             <v-col cols="3" class="text-right">
               <label>Total</label>
