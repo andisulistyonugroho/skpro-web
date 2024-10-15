@@ -69,21 +69,16 @@ const add2Cart = $debounce(async () => {
               <v-autocomplete v-model="selected" :rules="[(v: any) => !!v || 'Item required']" item-value="ptId"
                 :items="pricelistDetail" label="Name" return-object density="compact" id="product" autocomplete="off" />
             </v-col>
-            <v-col cols="9">
-              <v-text-field :value="selected ? selected.price : 0" v-maska="optPrice" label="@Price" readonly
-                density="compact" prefix="Rp" class="pr-2" />
-            </v-col>
-            <v-col cols="3">
-              <v-text-field :value="selected ? selected.discount : 0" v-maska="optTotal" label="@Discount" readonly
-                density="compact" prefix="Rp" />
-            </v-col>
-            <v-col cols="3">
+            <v-col cols="6">
               <v-text-field label="Qty" :rules="[(v: string) => !!v || 'Item required']" v-maska="optQty"
                 density="compact" :suffix="selected ? selected.unit : 'pcs'" id="qty" autocomplete="off" />
             </v-col>
-            <v-col cols="9">
-              <v-text-field :value="total" label="Total" v-maska="optTotal" readonly density="compact" prefix="Rp"
-                class="pl-2" />
+            <v-col cols="6">
+              <v-text-field :value="selected ? selected.price : 0" v-maska="optPrice" label="@Price" readonly
+                density="compact" prefix="Rp" class="pl-2" />
+            </v-col>
+            <v-col cols="12">
+              <v-text-field :value="total" label="Total" v-maska="optTotal" readonly density="compact" prefix="Rp" />
             </v-col>
           </v-row>
         </v-form>
