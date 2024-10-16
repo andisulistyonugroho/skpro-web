@@ -5,6 +5,7 @@ definePageMeta({
 })
 
 const { $dayjs, $debounce, $bus } = useNuxtApp()
+const { smAndDown } = useDisplay()
 const { user } = useAuthStore()
 const { getCustomerOfEntity } = useCustomerStore()
 const { customers } = storeToRefs(useCustomerStore())
@@ -158,12 +159,12 @@ const doSubmit = $debounce(async () => {
 <template>
   <v-tabs v-model="tab" align-tabs="start" color="primary" class="mb-3">
     <v-tab :value="1" to="/salesorder">List</v-tab>
-    <v-tab :value="2" to="/salesorder/add">New</v-tab>
+    <v-tab :value="2" to="/salesorder/add">Add</v-tab>
   </v-tabs>
   <v-container fluid>
     <v-form ref="theForm">
       <v-row no-gutters>
-        <v-col cols="4">
+        <v-col cols="12" md="4">
           <v-autocomplete v-model="payload.ptnrIdBill" :items="customers" item-value="ptnrId" item-title="ptnrName"
             label="Customer" density="compact" :rules="[(v: number) => !!v || 'Item required']" class="pr-2"
             id="customer">
@@ -175,21 +176,21 @@ const doSubmit = $debounce(async () => {
             </template>
           </v-autocomplete>
         </v-col>
-        <v-col cols="4">
+        <v-col cols="12" md="4">
           <v-autocomplete v-model="payload.piId" item-value="piId" item-title="piDesc" :items="pricelists"
             label="Pricelist" :rules="[(v: number) => !!v || 'Item required']" density="compact" class="pr-2" id="pl" />
         </v-col>
-        <v-col cols="2">
+        <v-col cols="12" md="2">
           <v-autocomplete v-model="payload.areaId" item-value="areaId" item-title="areaName" :items="areas" label="Area"
             :rules="[(v: string) => !!v || 'Item required']" density="compact" id="area" />
         </v-col>
-        <v-col cols="2">
+        <v-col cols="12" md="2">
           <v-date-input v-model="payload.soDate" prepend-icon="" density="compact" label="Transaction date"
             :rules="[(v: string) => !!v || 'Item required']" class="pl-2" />
         </v-col>
         <v-col cols="12">
-          <v-btn density="compact" class="text-capitalize" variant="tonal" @click="openDProduct"
-            id="btn-choose-product">choose
+          <v-btn :block="smAndDown" :density="smAndDown ? 'default' : 'compact'" class="text-capitalize" variant="tonal"
+            @click="openDProduct" id="btn-choose-product">choose
             product</v-btn>
         </v-col>
       </v-row>
