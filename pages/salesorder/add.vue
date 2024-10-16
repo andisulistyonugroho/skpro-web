@@ -117,7 +117,15 @@ const doSubmit = $debounce(async () => {
   try {
     $bus.$emit('waitDialog', true)
     console.log('do submit')
-    console.log(payload.value.enId)
+    const soDetail = shoppingCart.value.map((obj: any) => {
+      return {
+        sodPtId: obj.ptId,
+        sodQty: obj.qty,
+        sodPrice: obj.price,
+        sodDisc: 0
+      }
+    })
+    console.log('so details: ', soDetail)
     await newOrder({
       salesOrder: {
         soDomId: 1,
@@ -133,7 +141,7 @@ const doSubmit = $debounce(async () => {
         soTotal: total.value,
         soTransRmks: payload.value.transRmks
       },
-      salesOrderDetail: []
+      salesOrderDetail: soDetail
     })
     $bus.$emit('waitDialog', false)
     $bus.$emit('okSnack', { color: 'green', message: 'Berhasil disimpan' })
