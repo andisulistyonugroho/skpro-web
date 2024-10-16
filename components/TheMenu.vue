@@ -1,10 +1,10 @@
 <script setup>
 const menus = [
   {
-    title: 'Sales Order', link: '/salesorder', icon: 'i-mdi-book-account-outline',
-    childs: [
-      { title: 'Baru', link: '/salesorder/add' }
-    ]
+    title: 'Sales Order', link: '/salesorder/add', icon: 'i-mdi-book-account-outline',
+    // childs: [
+    // { title: 'Baru', link: '/salesorder/add' }
+    // ]
   },
   // {
   //   title: 'Budgeting', icon: 'i-mdi-wallet-outline', link: '/budgeting', childs: [
