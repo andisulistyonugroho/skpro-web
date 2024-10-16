@@ -3,6 +3,7 @@ const props = defineProps({
   dialog: { type: Boolean, default: false }
 })
 const { $debounce } = useNuxtApp()
+const { smAndDown } = useDisplay()
 const { pricelistDetail } = storeToRefs(useSalesOrderStore())
 const emit = defineEmits(['closeit', 'add2cart'])
 interface PriceList {
@@ -56,26 +57,28 @@ const add2Cart = $debounce(async () => {
 </script>
 
 <template>
-  <v-dialog v-model="props.dialog" width="40%">
-    <v-card flat>
+  <v-dialog v-model="props.dialog" :width="!smAndDown ? '40%' : '100%'" :fullscreen="smAndDown">
+    <v-card flat :rounded="smAndDown ? 0 : 'lg'">
       <v-toolbar dark color="primary">
         <v-btn icon="i-mdi-close" dark @click="emit('closeit')" id="btn-close" />
         <v-toolbar-title>Product detail</v-toolbar-title>
       </v-toolbar>
       <v-card-text class="px-3 py-6">
         <v-form ref="theForm" lazy-validation>
-          <v-row no-gutters>
+          <v-row :no-gutters="!smAndDown">
             <v-col cols="12">
               <v-autocomplete v-model="selected" :rules="[(v: any) => !!v || 'Item required']" item-value="ptId"
-                :items="pricelistDetail" label="Name" return-object density="compact" id="product" autocomplete="off" />
+                :items="pricelistDetail" label="Name" return-object :density="!smAndDown ? 'compact' : 'default'"
+                id="product" autocomplete="off" />
             </v-col>
-            <v-col cols="6">
+            <v-col cols="12" md="6">
               <v-text-field label="Qty" :rules="[(v: string) => !!v || 'Item required']" v-maska="optQty"
-                density="compact" :suffix="selected ? selected.unit : 'pcs'" id="qty" autocomplete="off" />
+                :density="!smAndDown ? 'compact' : 'default'" :suffix="selected ? selected.unit : 'pcs'" id="qty"
+                autocomplete="off" />
             </v-col>
-            <v-col cols="6">
+            <v-col cols="12" md="6">
               <v-text-field :value="selected ? selected.price : 0" v-maska="optPrice" label="@Price" readonly
-                density="compact" prefix="Rp" class="pl-2" />
+                :density="!smAndDown ? 'compact' : 'default'" prefix="Rp" :class="!smAndDown ? 'pl-2' : ''" />
             </v-col>
             <v-col cols="12">
               <v-text-field :value="total" label="Total" v-maska="optTotal" readonly density="compact" prefix="Rp" />

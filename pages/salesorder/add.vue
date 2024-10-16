@@ -166,8 +166,8 @@ const doSubmit = $debounce(async () => {
       <v-row no-gutters>
         <v-col cols="12" md="4">
           <v-autocomplete v-model="payload.ptnrIdBill" :items="customers" item-value="ptnrId" item-title="ptnrName"
-            label="Customer" density="compact" :rules="[(v: number) => !!v || 'Item required']" class="pr-2"
-            id="customer">
+            label="Customer" density="compact" :rules="[(v: number) => !!v || 'Item required']"
+            :class="!smAndDown ? 'pr-2' : ''" id="customer">
             <template v-slot:item="{ props, item }">
               <v-list-item v-bind="props" :subtitle="item.raw.ptnrId" />
             </template>
@@ -178,7 +178,8 @@ const doSubmit = $debounce(async () => {
         </v-col>
         <v-col cols="12" md="4">
           <v-autocomplete v-model="payload.piId" item-value="piId" item-title="piDesc" :items="pricelists"
-            label="Pricelist" :rules="[(v: number) => !!v || 'Item required']" density="compact" class="pr-2" id="pl" />
+            label="Pricelist" :rules="[(v: number) => !!v || 'Item required']" density="compact"
+            :class="!smAndDown ? 'pr-2' : ''" id="pl" />
         </v-col>
         <v-col cols="12" md="2">
           <v-autocomplete v-model="payload.areaId" item-value="areaId" item-title="areaName" :items="areas" label="Area"
@@ -186,7 +187,7 @@ const doSubmit = $debounce(async () => {
         </v-col>
         <v-col cols="12" md="2">
           <v-date-input v-model="payload.soDate" prepend-icon="" density="compact" label="Transaction date"
-            :rules="[(v: string) => !!v || 'Item required']" class="pl-2" />
+            :rules="[(v: string) => !!v || 'Item required']" :class="!smAndDown ? 'pl-2' : ''" />
         </v-col>
         <v-col cols="12">
           <v-btn :block="smAndDown" :density="smAndDown ? 'default' : 'compact'" class="text-capitalize" variant="tonal"
@@ -217,13 +218,13 @@ const doSubmit = $debounce(async () => {
         </template>
       </v-data-table>
     </v-sheet>
-    <v-row no-gutters>
-      <v-col cols="6">
-        <v-textarea v-model="payload.transRmks" variant="outlined" label="Order Notes" class="mt-5 mr-3 rounded-lg"
-          rows="3" counter :rules="[(v: string) => v && v.length <= 300 || 'Max 300 characters']" />
+    <v-row :no-gutters="!smAndDown">
+      <v-col cols="12" md="6">
+        <v-textarea v-model="payload.transRmks" variant="outlined" label="Order Notes" class="mt-5 rounded-lg" rows="3"
+          counter :rules="[(v: string) => v && v.length <= 300 || 'Max 300 characters']" />
       </v-col>
-      <v-col cols="6">
-        <v-sheet rounded class="mt-5 pa-3 border">
+      <v-col cols="12" md="6">
+        <v-sheet rounded :class="smAndDown ? 'mt-5 pa-3 border' : 'ml-3 mt-5 pa-3 border'">
           <v-row no-gutters>
             <v-col cols="3" class="text-right">
               <label>Sub Total</label>
