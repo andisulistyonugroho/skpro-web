@@ -19,7 +19,7 @@ logs
 .idea
 
 # Generated Protobuf
-protob-gen
+# protob-gen
 
 # Local env files
 .env
