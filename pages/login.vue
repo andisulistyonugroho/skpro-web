@@ -1,6 +1,6 @@
 <script setup lang="ts">
 definePageMeta({
-  layout: '',
+  layout: false,
   middleware: 'auth'
 })
 const { $debounce, $router } = useNuxtApp()
@@ -8,8 +8,8 @@ const { login } = useAuthStore()
 const passType = ref(false)
 const loginF = ref()
 const payload = ref({
-  username: null,
-  password: null
+  username: '',
+  password: ''
 })
 
 const doLogin = $debounce(async () => {
@@ -43,7 +43,6 @@ const doLogin = $debounce(async () => {
                 </v-form>
               </v-card-text>
               <v-card-actions>
-                <v-spacer></v-spacer>
                 <v-btn size="large" color="secondary" rounded="lg" block variant="flat" class="text-capitalize"
                   @click="doLogin" id="btn-login">
                   Masuk&nbsp;

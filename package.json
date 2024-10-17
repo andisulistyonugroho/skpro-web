@@ -5,7 +5,9 @@
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
+    "dev-production": "NUXT_PUBLIC_API_BASE=http://exapro.ssbhjhestiwidodo.com:4000 nuxt dev",
     "generate": "nuxt generate",
+    "generate-production": "NUXT_PUBLIC_API_BASE=http://exapro.ssbhjhestiwidodo.com:4000 nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
   },
