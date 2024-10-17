@@ -26,15 +26,15 @@ const payload = ref({
   ptnrIdBill: null,
   piId: null,
   areaId: null,
-  soSalesPerson: 1,
+  soSalesPerson: 5101517,
   transRmks: null
 })
 
 const shoppingCart = ref<any>([])
 const headers = [
   { title: 'Item', align: 'start', key: 'title', width: '*' },
-  { title: '@Price', align: 'end', key: 'price', width: '20%' },
   { title: 'Qty', align: 'end', key: 'qty', width: '10%' },
+  { title: '@Price', align: 'end', key: 'price', width: '20%' },
   { title: 'Total', align: 'end', key: 'total', width: '30%' }
 ] as const
 const search = ref()
